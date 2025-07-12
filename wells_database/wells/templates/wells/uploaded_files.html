@@ -1,0 +1,35 @@
+<!-- wells/templates/wells/uploaded_files.html -->
+
+<h2>Uploaded LAS Files</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>File Name</th>
+            <th>Upload Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for file in files %}
+        <tr>
+            <td>{{ file.id }}</td>
+            <td>{{ file.files.name }}</td>
+            <td>{{ file.upload_date }}</td>
+            <td>
+                <form method="post" action="{% url 'delete_file' file.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No LAS files uploaded yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'upload_las_file' %}">← Back to Upload</a>
