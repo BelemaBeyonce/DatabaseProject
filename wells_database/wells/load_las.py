@@ -1,10 +1,15 @@
 import lasio
 from wells.models import Area, Wells, Curve, CurveValue
 
-def parse_las_file(file_path, area_name):
-    las = lasio.read(file_path)
 
-    def get_value(section, key, default):
+def parse_las_file(file_path, area_name='User Upload'):
+    try:
+        las = lasio.read(file_path)
+    except Exception as e:
+        print(f"Failed to parse {file_path}: {e}")
+        return None  # So the view can skip it safely
+
+    def get_value(section, key, default=None):
         try:
             item = section[key]
             return item.value if hasattr(item, 'value') else item
@@ -13,45 +18,46 @@ def parse_las_file(file_path, area_name):
 
     well_name = get_value(las.well, 'WELL', 'UnknownWell')
     uwi = get_value(las.well, 'UWI', None)
-    if Wells.objects.filter(uwi=uwi).exists():
-        print(f"Well with UWI {uwi} already exists. Skipping.")
-        return 
-    latitude = get_value(las.well, 'LAT', None)
-    longitude = get_value(las.well, 'LON', None)
+    latitude = get_value(las.well, 'LAT')
+    longitude = get_value(las.well, 'LON')
     start = float(get_value(las.well, 'STRT', 0))
     stop = float(get_value(las.well, 'STOP', 0))
     unit_obj = las.well.get('STRT')
     unit = unit_obj.unit if unit_obj and hasattr(unit_obj, 'unit') else 'M'
 
-    area, _ = Area.objects.get_or_create(area_name=area_name)
-    well = Wells.objects.create(
-        area=area,
-        well_name=well_name,
-        uwi=uwi,
-        latitude=float(latitude) if latitude else None,
-        longitude=float(longitude) if longitude else None,
-        depth_start=start,
-        depth_stop=stop,
-        unit=unit
-    )
+    curves = []
+    try:
+        for curve in las.curves:
+            depths = las.index
+            values = las[curve.mnemonic]
 
-    for curve in las.curves:
-        c = Curve.objects.create(
-            well=well,
-            mnemonic=curve.mnemonic,
-            unit=curve.unit,
-            description=curve.descr
-        )
+            curve_data = []
+            for i in range(len(depths)):
+                try:
+                    curve_data.append((float(depths[i]), float(values[i])))
+                except (ValueError, TypeError):
+                    continue
 
-        depths = las.index
-        values = las[curve.mnemonic]
+            curves.append({
+                'mnemonic': curve.mnemonic,
+                'unit': curve.unit,
+                'description': curve.descr,
+                'values': curve_data
+            })
+    except Exception as e:
+        print(f"Error reading curves from {file_path}: {e}")
+        return None
 
-        for i in range(len(depths)):
-            try:
-                depth = float(depths[i])
-                value = float(values[i])
-                CurveValue.objects.create(curve=c, depth=depth, value=value)
-            except (ValueError, TypeError):
-                continue
+    return {
+        'well_name': well_name,
+        'uwi': uwi,
+        'latitude': float(latitude) if latitude else None,
+        'longitude': float(longitude) if longitude else None,
+        'depth_start': start,
+        'depth_stop': stop,
+        'unit': unit,
+        'area_name': area_name,
+        'curves': curves
+    }
 
-    return well
+

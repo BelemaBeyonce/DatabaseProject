@@ -12,12 +12,14 @@ class Wells(models.Model): #defining the wells model annd its inheriting the mod
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     well_name = models.CharField(max_length=100)
     uwi = models.CharField("Unique Well Identifier", max_length=100, unique=True)
-    location = models.CharField(max_length=255, blank=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
     depth_start = models.FloatField(blank=True, null=True)
     depth_stop = models.FloatField(blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
     # Adding optional fields for latitude and longitude
     # These can be used to store the geographical coordinates of the well.
     # They are set to blank=True and null=True to allow for wells without these details.
+    operator = models.CharField(max_length=100, blank=True, null=True)
     field = models.CharField(max_length=100, blank=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)

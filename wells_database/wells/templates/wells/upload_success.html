@@ -6,9 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>✅ LAS File Uploaded Successfully!</h1>
-    <p>Your well log data has been processed.</p>
-    <a href="{% url 'upload_las_file' %}">Upload Another File</a>
-    
+    <h2>Upload Successful!</h2>
+    <p>Files for "{{ well_name }}" were uploaded successfully.</p>
+    <a href="{% url 'upload_las_file' %}">Upload more</a>
+
 </body>
 </html>

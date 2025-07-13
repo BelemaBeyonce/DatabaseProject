@@ -5,32 +5,37 @@
   <title>Upload LAS Files</title>
 </head>
 <body>
-  <h2>Upload LAS Files</h2>
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-      <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
+ <h2>Upload LAS Files</h2>
 
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
 
-    <!-- Only required input from user -->
-    <label for="well_name">Well Name (Required):</label><br>
-    <input type="text" name="well_name" required><br><br>
+  <label for="well_name">Well Name (Required):</label><br>
+  <input type="text" name="well_name" required><br><br>
 
-    <label for="file_type">File Type:</label><br>
-    <select name="file_type" required>
-      <option value="las">LAS</option>
-    </select><br><br>
+  <label>Upload Type:</label><br>
+  <input type="radio" name="upload_mode" value="file" onclick="toggleInputs('file')" checked> File(s)
+  <input type="radio" name="upload_mode" value="folder" onclick="toggleInputs('folder')"> Folder<br><br>
 
-    <!-- Unified input for files or folder -->
-    <label>Select LAS File(s) or Folder:</label><br>
-    <input type="file" name="files" multiple webkitdirectory directory><br><br>
+  <div id="fileInput">
+    <label>Select One or More Files:</label><br>
+    <input type="file" name="files" multiple><br><br>
+  </div>
 
-    <button type="submit">Upload</button>
-  </form>
+  <div id="folderInput" style="display:none;">
+    <label>Select Folder:</label><br>
+    <input type="file" name="files" webkitdirectory multiple><br><br>
+  </div>
+
+  <button type="submit">Upload</button>
+</form>
+
+<script>
+  function toggleInputs(mode) {
+    document.getElementById('fileInput').style.display = mode === 'file' ? 'block' : 'none';
+    document.getElementById('folderInput').style.display = mode === 'folder' ? 'block' : 'none';
+  }
+</script>
+
 </body>
 </html>
