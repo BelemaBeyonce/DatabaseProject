@@ -2,13 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Upload Successful</title>
 </head>
 <body>
-    <h2>Upload Successful!</h2>
-    <p>Files for "{{ well_name }}" were uploaded successfully.</p>
-    <a href="{% url 'upload_las_file' %}">Upload more</a>
 
+{% extends 'wells/base.html' %}
+
+{% block title %}Upload Successful{% endblock %}
+
+{% block content %}
+    <h2>Upload Successful!</h2>
+    {% if well_name %}
+    <p>Files for "{{ well_name }}" were uploaded successfully.</p>
+    {% endif %}
+
+    {% if uploaded_devs %}
+    <h3>Deviation Survey Data</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Well</th>
+                <th>MD</th>
+                <th>Inclination</th>
+                <th>Azimuth</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dev in uploaded_devs %}
+            <tr>
+                <td>{{ dev.well.well_name }}</td>
+                <td>{{ dev.md }}</td>
+                <td>{{ dev.inclination }}</td>
+                <td>{{ dev.azimuth }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <hr>
+    <a href="{% url 'uploaded_files_table' %}">View All Uploaded Files</a>
 </body>
 </html>
+{% endblock %}

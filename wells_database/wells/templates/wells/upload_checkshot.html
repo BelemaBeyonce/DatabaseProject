@@ -1,0 +1,17 @@
+{% extends 'wells/base.html' %}
+
+{% block title %}Upload Checkshot File{% endblock %}
+
+{% block content %}
+    <h2>Upload Checkshot File</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="checkshot_file" multiple required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <hr>
+    <a href="{% url 'upload_deviation' %}">Upload Deviation</a><br>
+    <a href="{% url 'upload_las_file' %}">Upload LAS File</a><br>
+    <a href="{% url 'upload_header' %}">Upload Header File</a>
+{% endblock %}

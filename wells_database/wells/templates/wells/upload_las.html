@@ -5,6 +5,12 @@
   <title>Upload LAS Files</title>
 </head>
 <body>
+{% extends 'wells/base.html' %}
+
+{% block title %}Upload LAS Files{% endblock %}
+
+{% block content %}
+
  <h2>Upload LAS Files</h2>
 
 <form method="POST" enctype="multipart/form-data">
@@ -29,7 +35,10 @@
 
   <button type="submit">Upload</button>
 </form>
-
+    <a href="{% url 'upload_deviation' %}">Upload Deviation</a><br>
+    <a href="{% url 'upload_checkshot_files' %}">Upload Checkshot</a><br>
+    <a href="{% url 'upload_header_files' %}">Upload Header</a>
+    
 <script>
   function toggleInputs(mode) {
     document.getElementById('fileInput').style.display = mode === 'file' ? 'block' : 'none';
@@ -39,3 +48,4 @@
 
 </body>
 </html>
+{% endblock %}

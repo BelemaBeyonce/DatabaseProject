@@ -47,6 +47,28 @@ class UploadLAS (models.Model):  #defining the upload LAS model, which will hold
     well = models.ForeignKey(Wells, on_delete=models.CASCADE, null=True, blank=True)  # Optional: link to a well
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+class DeviationSurvey(models.Model):
+    well = models.ForeignKey(Wells, on_delete=models.CASCADE)
+    md = models.FloatField()  # Measured Depth
+    incl = models.FloatField()  # Inclination
+    azim = models.FloatField()  # Azimuth
+
+    def __str__(self):
+        return f"{self.well.well_name} at {self.md}m"
+
+class Checkshot(models.Model):
+    well = models.ForeignKey(Wells, on_delete=models.CASCADE)
+    depth = models.FloatField()
+    time = models.FloatField()
+
+    
+
+class WellHeader(models.Model):
+    well = models.ForeignKey(Wells, on_delete=models.CASCADE)
+    content = models.TextField()  # Store header as text
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+
     
 
     

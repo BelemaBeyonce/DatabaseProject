@@ -1,35 +1,72 @@
-<!-- wells/templates/wells/uploaded_files.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Uploaded Files</title>
+</head>
+<body>
+{% extends 'wells/base.html' %}
 
-<h2>Uploaded LAS Files</h2>
+{% block title %}Uploaded Files{% endblock %}
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>File Name</th>
-            <th>Upload Date</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for file in files %}
-        <tr>
-            <td>{{ file.id }}</td>
-            <td>{{ file.files.name }}</td>
-            <td>{{ file.upload_date }}</td>
-            <td>
-                <form method="post" action="{% url 'delete_file' file.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="4">No LAS files uploaded yet.</td>
-        </tr>
+{% block content %}
+    <h2>Uploaded LAS Files</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>File Name</th>
+                <th>Upload Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file.id }}</td>
+                <td>{{ file.files.name }}</td>
+                <td>{{ file.upload_date }}</td>
+                <td>
+                    <form method="post" action="{% url 'delete_file' file.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No LAS files uploaded yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Uploaded Deviation Files</h2>
+    <ul>
+        {% for file in deviation_files %}
+        <li>{{ file.filename }} - {{ file.uploaded_at }}</li>
         {% endfor %}
-    </tbody>
-</table>
+    </ul>
 
-<a href="{% url 'upload_las_file' %}">← Back to Upload</a>
+    <h2>Uploaded Checkshot Files</h2>
+    <ul>
+        {% for file in checkshot_files %}
+        <li>{{ file.filename }} - {{ file.uploaded_at }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Uploaded Header Files</h2>
+    <ul>
+        {% for file in header_files %}
+        <li>{{ file.filename }} - {{ file.uploaded_at }}</li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+    <a href="{% url 'upload_las_file' %}">Upload LAS File</a><br>
+    <a href="{% url 'upload_deviation' %}">Upload Deviation</a><br>
+    <a href="{% url 'upload_checkshot' %}">Upload Checkshot</a><br>
+    <a href="{% url 'upload_header' %}">Upload Header</a>
+</body>
+</html>
+{% endblock %}

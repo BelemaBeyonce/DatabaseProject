@@ -1,0 +1,18 @@
+{% extends 'wells/base.html' %}
+
+{% block title %}Upload Deviation Survey{% endblock %}
+
+{% block content %}
+    <h2>Upload Deviation Survey</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Select deviation file (.csv, .txt):</label><br>
+        <input type="file" name="file"multiple required><br><br>
+        <button type="submit">Upload</button>
+    </form>
+
+    <hr>
+    <a href="{% url 'upload_las_file' %}">Upload LAS File</a><br>
+    <a href="{% url 'upload_checkshot' %}">Upload Checkshot File</a><br>
+    <a href="{% url 'upload_header' %}">Upload Header File</a>
+{% endblock %}
